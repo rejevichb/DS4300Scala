@@ -24,18 +24,28 @@ Part A - Warmup
 
 
 // converts an unsigned integer to an n-bit binary string
-def toBinary(x: Int, bits: Int): String = {
-  "fix"
-}
+def toBinary(x: Int, bits: Int): String = x.toBinaryString.reverse.padTo(bits, '0').reverse
 
+
+val _8b1 = toBinary(1,8)
+val _8b255 =toBinary(255, 8)
+val _16b256 =toBinary(256, 16)
+val _16b9999 = toBinary(9999, 16)
+val _8b129 =toBinary(129, 8)
+val _8b254 =toBinary(254, 8)
 
 // weight = number of 1's in a binary number
 // plot of the weight of binary numbers from 0 to 1024
-def weight(b: String): Int = {
-  0
-}
+def weight(b: String): Int = b.count(_ == '1')
 
+weight(_8b1)
+weight(_8b255)
+weight(_16b256)
+weight(_16b9999)
+weight(_8b129)
+weight(_8b254)
 
+//TODO Jeff take a look at this
 // returns the fraction of records that would have to be re-assigned to a new node
 // if records were re-partitioned from startN to endN nodes using the mod function.
 def moved(records: Int, startN: Int, endN: Int): Double = {
