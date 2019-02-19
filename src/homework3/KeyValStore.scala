@@ -10,54 +10,88 @@ class KeyValStore {
   //we represent the key value store as a map
   private var core_map: scala.collection.immutable.HashMap[String, List[String]] = HashMap()
 
+  /*
+  Only the current instance of KeyValStore can access its own core map. (i.e. if we were to extend
+  the class to accept another instance of itself, the other instance would not have access to the
+  other's core map. This is object-private, even more restrictive than Java's private modifier */
+  private[this] def updateMap(map : HashMap[String, List[String]]) : Unit = this.core_map = map
 
   /*
-  TODO
+  Returns the list of strings a the given key or the empty list if not found. */
+  private[this] def lookup(k:String): List[String] = this.core_map getOrElse(k, List.empty)
+
+  /*
+  Returns the list of string values at the given key, and a list with a single empty string i */
+  def get(key: String): Option[List[String]] = core_map get key
+
+  /*
+  Allows the specification of a variable orElse value for a get
    */
-  def get(key: String): Option[List[String]] = core_map get key //coremap(k)
+  def getOrElse(key: String, orElse: List[String]) : List[String] = core_map getOrElse(key, orElse)
+
+  /*
+  Return the entire hash-map (no need to copy - its immutable)
+   */
+  def all() : HashMap[String, List[String]] = this.core_map
+
 
   /*
   Set a new key value pair in the store, or update it if it already exists. A
   key has a list of strings as a value, and multiple string values can be added
-  to the list at once.
-   */
+  to the list at once. */
   def set(key: String, value: String): Unit = {
-    this.core_map = this.core_map + (key -> List(value))
+    updateMap(this.core_map + (key -> List(value)))
   }
 
   /*
-  Insert the specified value at the head of the list stored at key.
-   */
+  Insert the specified value at the head of the list stored at key. */
   def lpush(key: String, value: String): Int = {
-    this.core_map = this.core_map + (key -> (value +: (this.core_map getOrElse (key, List("")))))
-    this.core_map getOrElse(key, List("")) size
+    updateMap(this.core_map + (key -> (value +: lookup(key))))
+    llen(key)
   }
-
 
   /*
   Insert all the specified values at the tail of the list stored at key.
-  Returns the new length of the list
-   */
+  Returns the new length of the list */
   def rpush(key: String, value: String): Int = {
-    this.core_map = this.core_map + (key -> (this.core_map getOrElse (key, List("") :+ value)))
-    this.core_map getOrElse(key, List("")) length
+    updateMap(this.core_map + (key -> (lookup(key) :+ value)))
+    llen(key)
   }
 
   /*
-  Removes and returns the first element of the list stored at key.
-   */
+  Removes and returns the first element of the list stored at key.  */
   def lpop(key: String): String = {
-    val valueList = this.core_map getOrElse(key, "")
-
+    val valueList = lookup(key)
+    updateMap(this.core_map updated (key, valueList.drop(1)))
+    valueList.head
   }
 
-  def rpop(key: String): String
+  def rpop(key: String): String = {
+    val valueList = lookup(key)
+    updateMap(this.core_map updated (key, valueList.dropRight(1)))
+    valueList.last
+  }
 
-  def lrange(key: String): List[String]
+  /*
+  Returns the specified elements of the list stored at key. The offsets start and
+  stop are zero-based indexes, with 0 being the first element of the list to n. */
+  def lrange(k: String, maxIdx:Int, minIdx:Int): List[String] = {
+    val l = lookup(k)
+    assert(maxIdx >= minIdx && maxIdx <= (l length) && minIdx >= 0, "invalid min or max argument. list size ")
+    for { //for comprehension
+      (x,i) <- l zipWithIndex
+      if i <= maxIdx && i >= minIdx
+    } yield x
+  }
 
-  def llen(key: String)
+  /*
+  Returns the length of the list stored at key. If key does not
+  exist, it is interpreted as an empty list and 0 is returned. */
+  def llen(key: String): Int = lookup(key) length
 
-  def flushall() = this.core_map = HashMap()
+  /*
+  Delete all the keys in this instance of KeyValueStore */
+  def flushall() : Unit = this.core_map = HashMap()
 
 }
 
