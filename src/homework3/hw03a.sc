@@ -19,12 +19,34 @@ Part A - Warmup
        .reduce((x, y) => (x zip y).map { case (u, v) => u + v })
       println(nulls.mkString(","))
 
+
+
+ In the object oriented style of programming, we loop through every line
+ in the file and then for each line in that collection, we loop through
+ a collection of each element that was separated by a comma in that line,
+ and then if we find an empty string as a value in that list (i.e. if there
+ exists a substring ",," in the file, then we add one to the nulls list at
+ the index of the null value in the line. The resulting comma separated
+ string lists a count of null values per "column" of the data.
+
+ The second part does the same thing, except it takes advantage of higher-level
+ functional abstractions such as map and reduce. Map takes a function and some
+ data, and applies that function to the data, returning the transformed data.
+ The reduce() method applies a function against an accumulator and each element
+ in the array (from left to right) to reduce it to a single value.  Essentially,
+ we map the if statement to the data and then reduce it to this intermediary binary
+ list, and then using zip we flatten
+
+
+
  */
 
 
 
 // converts an unsigned integer to an n-bit binary string
-def toBinary(x: Int, bits: Int): String = x.toBinaryString.reverse.padTo(bits, '0').reverse
+def toBinary(x: Int, bits: Int): String =
+  if (x.toBinaryString.length() > bits) throw new IllegalArgumentException()
+  else x.toBinaryString.reverse.padTo(bits, '0').reverse
 
 
 val _8b1 = toBinary(1,8)
@@ -34,16 +56,19 @@ val _16b9999 = toBinary(9999, 16)
 val _8b129 =toBinary(129, 8)
 val _8b254 =toBinary(254, 8)
 
+
 // weight = number of 1's in a binary number
 // plot of the weight of binary numbers from 0 to 1024
 def weight(b: String): Int = b.count(_ == '1')
 
+weight("0000000000000")
 weight(_8b1)
 weight(_8b255)
 weight(_16b256)
 weight(_16b9999)
 weight(_8b129)
 weight(_8b254)
+weight("1")
 
 //TODO Jeff take a look at this
 // returns the fraction of records that would have to be re-assigned to a new node
