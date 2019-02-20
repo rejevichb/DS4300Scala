@@ -35,29 +35,23 @@ class LabeledPropertyGraph {
   private var attributes : Map[Vertex, List[Attribute]] = new HashMap()
   private val adj: KeyValStore[Vertex, Edge] = new KeyValStore() //Adjacency list for Vertex
   private var vertexes: scala.collection.immutable.List[Vertex] = List()
-
-
-
   /*
   Adds a bare (unconnected) vertex to the graph */
   def addVertex(v: Vertex) : Unit = {
     this.vertexes = this.vertexes :+ v
   }
-
   /*
   Add src and sink nodes to  */
   def createIfNotPresent(src: Vertex, sink: Vertex): Unit = {
     if (!(this.vertexes contains src)) addVertex(src)
     if (!(this.vertexes contains sink)) addVertex(sink)
   }
-
   /*
   Add a uni-directional edge to the graph from vertex u to v */
   def addEdge(src: Vertex, sink: Vertex, weight: Double) : Unit = {
     createIfNotPresent(src, sink)
     this.adj.set(src, Edge(src,sink,weight))
   }
-
   /*
   Add a bi-directional edge to the graph between vertexes u and v */
   def addBiDirectionalEdge(src: Vertex, sink: Vertex, weightSrcSink:Int, weightSinkSrc:Int) : Unit = {
@@ -66,7 +60,6 @@ class LabeledPropertyGraph {
     this.adj.set(src, Edge(src,sink,weightSrcSink))
     this.adj.set(sink, Edge(sink,src,weightSinkSrc))
   }
-
   /*
   List all the vertexes that this vertex flows to */
   def adjacentTo(v: Vertex): List[Vertex] =
@@ -96,9 +89,9 @@ class LabeledPropertyGraph {
   }
 
 
-  def shortestPath(src: Vertex, sink: Vertex): List[Vertex] = {
-
-  }
+//  def shortestPath(src: Vertex, sink: Vertex): List[Vertex] = {
+//
+//  }
 
   //some intuitive and useful one liners
   def outDegree(v:Vertex) : Int = adjacentTo(v) length
