@@ -51,13 +51,12 @@ Here's an example of a FunSuite with Matchers mixed in:
 */
 import org.scalatest.FunSuite
 import org.scalatest.Matchers
-
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class TestKeyValStore extends FunSuite with Matchers {
 
-  def initKVStore([kT,vT]): new KeyValStore(String,)
+  val kvs : KeyValStore[String,String] = new KeyValStore[String,String]()
 
   test("Calling set should increase the length of the hash map by 1") {
     List() should be ('empty)

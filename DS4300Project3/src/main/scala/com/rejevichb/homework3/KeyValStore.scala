@@ -4,7 +4,7 @@ import scala.collection.immutable.HashMap
 import language.{postfixOps, implicitConversions}
 
 //We literally copied & pasted method signatures directly from Redis documentation
-class KeyValStore[keyT, valT] {
+public class KeyValStore[keyT, valT] {
 
   //we represent the key value store as a map of key String to value: List of type T.
   private var core_map: scala.collection.immutable.HashMap[keyT, List[valT]] = HashMap()
