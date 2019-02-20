@@ -22,12 +22,21 @@ included here.  For more information, visit:
 
 http://www.scalatest.org/
 */
-import com.rejevichb.homework3.KeyValStore
+import homework3.KeyValStore
+
 import scala.collection._
 import org.scalatest.Assertions
 import org.junit.Test
 
 class KeyValueTests extends Assertions {
+
+  def adjacent(v: String, mp:Map[String,String]): List[String] = {
+    for {
+      entry <- mp
+      x <- if (entry._2.head == v) entry._1
+      x <- if (entry._1 == v) entry._2.head
+    } yield x
+  }
 
 
   @Test def stackShouldPopValuesIinLastInFirstOutOrder() {

@@ -17,7 +17,6 @@ class SimpleGraph {
   }
   
   def adjacent(v: Node): List[Node] = {
-    //kvs.all().foldLeft(List[Node]){ case (a, (k, v)) => a +: v.head }
     for {
       entry <- this.kvs.all
       x <- if (entry._2.head == v) entry._1
