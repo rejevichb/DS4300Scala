@@ -1,4 +1,4 @@
-package homework3
+package com.rejevichb.homework3
 
 import scala.collection.immutable.HashMap
 import language.postfixOps

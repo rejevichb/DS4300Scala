@@ -1,10 +1,10 @@
-package homework3
+package com.rejevichb.homework3
 
 import scala.collection.immutable.HashMap
 import language.{postfixOps, implicitConversions}
 
 //We literally copied & pasted method signatures directly from Redis documentation
-public class KeyValStore[keyT, valT] {
+class KeyValStore[keyT, valT] {
 
   //we represent the key value store as a map of key String to value: List of type T.
   private var core_map: scala.collection.immutable.HashMap[keyT, List[valT]] = HashMap()
@@ -64,10 +64,10 @@ public class KeyValStore[keyT, valT] {
   stop are zero-based indexes, with 0 being the first element of the list to n. */
   def lrange(k: keyT, maxIdx:Int, minIdx:Int): List[valT] = {
     val l = lookup(k)
-    assert(maxIdx >= minIdx && maxIdx <= (l length) && minIdx >= 0, "invalid min or max argument. list size ")
-    for { //for comprehension
-      (x,i) <- l zipWithIndex
-      if i <= maxIdx && i >= minIdx
+    //assert(maxIdx >= minIdx && maxIdx <= (l length) && minIdx >= 0, "invalid min or max argument. list size ")
+    for {
+      (x: valT, i: Int) <- l zipWithIndex //tried without explicit typing
+      if (i <= maxIdx) && (i >= minIdx) //tried indenting if
     } yield x
   }
   /*
