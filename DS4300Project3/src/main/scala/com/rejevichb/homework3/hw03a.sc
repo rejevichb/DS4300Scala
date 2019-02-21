@@ -70,7 +70,6 @@ weight(_8b129)
 weight(_8b254)
 weight("1")
 
-//TODO Jeff take a look at this
 // returns the fraction of records that would have to be re-assigned to a new node
 // if records were re-partitioned from startN to endN nodes using the mod function.
 def moved(records: Int, startN: Int, endN: Int): Double = {
@@ -81,18 +80,13 @@ def moved(records: Int, startN: Int, endN: Int): Double = {
   else 1 - sets * startN / records.toFloat
 }
 
-def maxDivHelper(m:Int, n:Int):Int ={
-  if(m < n) {
-    maxDivHelper(n,m)
-  }
+def maxDivHelper(m: Int, n: Int): Int = {
+  if(m < n)  maxDivHelper(n,m)
   else if (m % n == 0) n
-  else maxDivHelper(n, m%n);
+  else maxDivHelper(n, m % n)
 }
 
-def minMutiHelper(m:Int, n:Int):Int ={
-  m*n / maxDivHelper(m, n)
-}
+def minMutiHelper(m: Int, n: Int) : Int =  m * n / maxDivHelper(m, n)
 
 
 moved(1000000, 100, 107)
-System.out.println(moved(1000000, 100, 107))

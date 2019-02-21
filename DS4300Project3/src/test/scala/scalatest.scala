@@ -22,38 +22,66 @@ included here.  For more information, visit:
 
 http://www.scalatest.org/
 */
-import homework3.KeyValStore
+import com.rejevichb.homework3.{KeyValStore, SimpleGraph}
 
 import scala.collection._
 import org.scalatest.Assertions
 import org.junit.Test
 
-class KeyValueTests extends Assertions {
+class TestKeyValueStore extends Assertions {
 
-  def adjacent(v: String, mp:Map[String,String]): List[String] = {
-    for {
-      entry <- mp
-      x <- if (entry._2.head == v) entry._1
-      x <- if (entry._1 == v) entry._2.head
-    } yield x
+  val kvs : KeyValStore[String,String] = new KeyValStore[String,String]
+
+  @Test def setAndGetSimpleTest() {
+    kvs.set("bean", "pot")
+    kvs.set("hack", "-athon")
+    assert(kvs.get("bean") === Some(List("pot")))
+    assert(kvs.get("hack") === Some(List("-athon")))
   }
 
+  @Test def testMultiAdd() {
+    kvs.flushall()
+    kvs.set("bean", "pot")
+    kvs.set("bean", "curd")
+    kvs.set("bean", "green")
+    assert(kvs.get("bean") === Some(List("green", "curd", "pot")))
 
-  @Test def stackShouldPopValuesIinLastInFirstOutOrder() {
-    val stack = new mutable.ArrayStack[Int]
-    stack.push(1)
-    stack.push(2)
-    assert(stack.pop() === 2)
-    assert(stack.pop() === 1)
-  }
-
-  @Test def stackShouldThrowRuntimeExceptionIfAnEmptyArrayStackIsPopped() {
-    val emptyStack = new mutable.ArrayStack[String]
-    intercept[RuntimeException] {
-      emptyStack.pop()
-    }
   }
 }
+
+
+class GraphTests extends Assertions {
+
+  val gs = new SimpleGraph
+
+  def cleanup() : Unit = gs.flush()
+
+  def setup() : Unit = {
+    gs.addNode("x");  gs.addNode("y");  gs.addNode("e");
+    gs.addNode("j");  gs.addNode("c");  gs.addNode("r");
+    gs.addNode("f");  gs.addNode("b");
+
+    gs.addEdge("r", "c");  gs.addEdge("r", "e");  gs.addEdge("j", "x");
+    gs.addEdge("r", "b");  gs.addEdge("b", "c");  gs.addEdge("j", "f");
+    gs.addEdge("r", "j");  gs.addEdge("b", "f");  gs.addEdge("f", "e");
+    gs.addEdge("r", "y");  gs.addEdge("b", "j");  gs.addEdge("e", "y");
+  }
+
+  @Test def testShortestPath1() {
+    setup()
+    assert(gs.shortest_path("x") === List("x", "j","r","y"))
+    cleanup()
+  }
+
+  @Test def testShortesPath2() {
+    cleanup()
+
+
+    cleanup()
+  }
+
+}
+
 
 /*
 Here's an example of a FunSuite with Matchers mixed in:
@@ -113,5 +141,23 @@ class ExampleSpec extends FunSpec {
         emptyStack.pop()
       }
     }
+  }
+}
+
+
+
+
+
+
+
+
+class TestGraph extends FunSuite with Matchers {
+
+  val kvs : KeyValStore[String,String] = new KeyValStore[String,String]()
+
+  test("A list's length should equal the number of elements it contains") {
+    List() should have length (0)
+    List(1, 2) should have length (2)
+    List("fee", "fie", "foe", "fum") should have length (4)
   }
 }

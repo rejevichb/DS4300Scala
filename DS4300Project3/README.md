@@ -4,12 +4,17 @@
 #####Directory Overview:
 | File                 | Description                                                                                                     |
 |----------------------|-----------------------------------------------------------------------------------------------------------------|
-| Graph Types          | Type Definitions and Aliases for readable code.                                                                 |
+| SimpleGraph          | Simple graph with BFS for shortest path                                                                         |
 | KeyValStore          | generic key value store for type T, which is a Redis-like  in-memory storethat stores a List[T] at a string key |
 | LabeledPropertyGraph | DirectedGraph implementation with weighted edges.                                                               |
-| Problem4Original     | the original unmodified non-generic string key to list  of string-only value store.                             |
-| hw03a.sc             | I'm going to put a very long string in here, ok this is the maximum table length for readability.               |
+| hw03a.sc             | scala notebook with the warmup excersizes and first part of the assignment                                      |
 
 
+##To test
+From top level directory ``DS4300Project3``, run the following:
 
+` -- $ mvn validate`
 
+` -- $ mvn compile`
+
+` -- $ mvn test`

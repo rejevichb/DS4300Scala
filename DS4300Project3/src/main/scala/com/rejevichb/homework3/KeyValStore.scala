@@ -18,7 +18,7 @@ class KeyValStore[keyT, valT] {
   private[this] def lookup(k:keyT): List[valT] = this.core_map getOrElse(k, List.empty)
   /*
   Returns the list of string values at the given key, and a list with a single empty string i */
-  def get(key: String): Option[List[valT]] = core_map get key
+  def get(key: keyT): Option[List[valT]] = core_map get key
   /*
   Allows the specification of a variable orElse value for a get*/
   def getOrElse(key: keyT, orElse: List[valT]) : List[valT] = core_map getOrElse(key, orElse)
@@ -30,7 +30,8 @@ class KeyValStore[keyT, valT] {
   key has a list of strings as a value, and multiple string values can be added
   to the list at once. */
   def set(key: keyT, value: valT): Unit = {
-    updateMap(this.core_map + (key -> List(value)))
+    if (!(this.core_map contains key)) updateMap(this.core_map + (key -> List(value)))
+    else updateMap(this.core_map + (key -> (value +: lookup(key))))
   }
   /*
   Insert the specified value at the head of the list stored at key. */
@@ -64,9 +65,9 @@ class KeyValStore[keyT, valT] {
   stop are zero-based indexes, with 0 being the first element of the list to n. */
   def lrange(k: keyT, maxIdx:Int, minIdx:Int): List[valT] = {
     val l = lookup(k)
-    //assert(maxIdx >= minIdx && maxIdx <= (l length) && minIdx >= 0, "invalid min or max argument. list size ")
+    assert(maxIdx >= minIdx && maxIdx <= (l length) && minIdx >= 0, "invalid min or max argument. list size ")
     for {
-      (x: valT, i: Int) <- l zipWithIndex //tried without explicit typing
+      (x: valT, i: Int) <- l.zipWithIndex
       if (i <= maxIdx) && (i >= minIdx) //tried indenting if
     } yield x
   }
