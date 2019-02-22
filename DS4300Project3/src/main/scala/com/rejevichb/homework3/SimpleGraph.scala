@@ -17,6 +17,7 @@ class SimpleGraph {
     this.nodes +: v
   }
 
+  //add bi-directional edge to graph
   def addEdge(u: Node, v: Node) = {
     if (!(this.nodes contains v)) addNode(v)
     if (!(this.nodes contains u)) addNode(u)
@@ -24,25 +25,24 @@ class SimpleGraph {
     kvs.set(v, u)
   }
 
-  def adjacent(v: Node): List[Node] = {
-    kvs.getOrElse(v, List.empty)
-  }
+  //list adjacent nodes
+  def adjacent(v: Node): List[Node] =  kvs.getOrElse(v, List.empty)
 
-  def flush(): Unit = this.kvs.flushall();
+  //flush in-memory store
+  def flush() : Unit = this.kvs.flushall
 
-
-  def shortest_path(start: Node): List[List[Node]] = {
+  //at each iteration of the inner BFS loop, look at all new nodes we see
+  //starting from src and add them to the 'seen' list. Return adjacency matrix
+  //in List[List[Node]] format, where the length of the inner list is the length
+  //of the path from given src to the last node in the list.
+  def shortest_path(src: Node): List[List[Node]] = {
     val g: Map[Node, List[Node]] = this.kvs.all()
-
-    def BFS(elems: List[Node], visited: List[List[Node]]): List[List[Node]] = {
-      val newNeighbors = elems.flatMap(g(_)).filterNot(visited.flatten.contains).distinct
-      if (newNeighbors.isEmpty)
-        visited
-      else
-        BFS(newNeighbors, newNeighbors :: visited)
+    def BFS(nds: List[Node], seen: List[List[Node]]): List[List[Node]] = {
+      val newNeighbors = nds.flatMap(g(_)).filterNot(seen.flatten.contains).distinct
+      if (newNeighbors.isEmpty) seen
+      else BFS(newNeighbors, newNeighbors :: seen)
     }
-
-    BFS(List(start), List(List(start))).reverse
+    BFS(List(src), List(List(src))).reverse
   }
 }
 
